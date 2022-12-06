@@ -1,4 +1,6 @@
-with open('day5.txt', 'r') as f:
+from copy import deepcopy
+
+with open('input.txt', 'r') as f:
     stacks = []
     for r in f:
         if len(r.strip()) == 0:
@@ -18,13 +20,20 @@ with open('day5.txt', 'r') as f:
     # get rid of empty crates and convert to lists
     stacks = [list([_ for _ in stack if _ != ' ']) for stack in stacks]
 
+    cm9k_stacks = deepcopy(stacks)
+    cm9k1_stacks = deepcopy(stacks)
+
     # perform ops
     for r in f:
         amt, frm, to = [int(_) for _ in r.split()[1::2]]
-        stacks[to-1].extend(stacks[frm-1][-amt:][::-1])
-        stacks[frm-1] = stacks[frm-1][:-amt]
+        cm9k_stacks[to-1].extend(cm9k_stacks[frm-1][-amt:][::-1])
+        cm9k_stacks[frm-1] = cm9k_stacks[frm-1][:-amt]
 
-    for i, stack in enumerate(stacks):
-        print('{}: {}'.format(i+1, stack[-1]))
+        # not reversed
+        cm9k1_stacks[to-1].extend(cm9k1_stacks[frm-1][-amt:])
+        cm9k1_stacks[frm-1] = cm9k1_stacks[frm-1][:-amt]
+
+    print('CrateMover9000: {}'.format(''.join([_[-1] for _ in cm9k_stacks])))
+    print('CrateMover9001: {}'.format(''.join([_[-1] for _ in cm9k1_stacks])))
 
 
