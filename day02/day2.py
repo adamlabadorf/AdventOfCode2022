@@ -1,5 +1,6 @@
 play_map = dict(zip('XYZ', 'ABC'))
 win_map = dict(zip('ABC', 'BCA'))
+lose_map = dict(zip('ABC', 'CAB'))
 score_map = dict(zip('ABC', [1, 2, 3]))
 
 def play(a, b):
@@ -11,10 +12,18 @@ def play(a, b):
     return score
 
 with open('input.txt') as f:
-    score = 0
+    part1_score = part2_score = 0
     for r in f:
         a, b = r.strip().split(' ')
-        b = play_map[b]
-        score += play(a, b)
+        part1_score += play(a, play_map[b])
 
-    print(score)
+        if b == 'X':
+            b = lose_map[a]
+        elif b == 'Y':
+            b = a
+        else:
+            b = win_map[a]
+        part2_score += play(a, b)
+
+    print('Part 1: {}'.format(part1_score))
+    print('Part 2: {}'.format(part2_score))
