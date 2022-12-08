@@ -78,12 +78,6 @@ with open('input.txt') as f:
     def rjust(x, n=4):
         return ''.join([str(_).rjust(n) for _ in x])
 
-    i = 2
-    print(rjust(range(len(scenic_scores[i]))))
-    print(rjust(trees[i]))
-    print(rjust(scenic_scores[i]))
-    print(rjust(scenic_scores_transpose[i]))
-
     max_scenic_score = 0
     for scores1, scores2 in zip(scenic_scores, scenic_scores_transpose):
         sum_scores = [_[0]*_[1] for _ in zip(scores1, scores2)]
