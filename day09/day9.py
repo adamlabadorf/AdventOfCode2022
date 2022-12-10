@@ -13,7 +13,7 @@ with open('input.txt') as f:
 
     num_knots = 10
     knots = [(0, 0)]*num_knots
-    prev_knots = [(0, 0)]*num_knots
+    #prev_knots = [(0, 0)]*num_knots
 
     tail_positions.add(knots[-1])
 
@@ -59,13 +59,13 @@ with open('input.txt') as f:
                     vert = knot_1[1]-knot_2[1]
 
                     # we move either +1, -1, or 0 in either direction
-                    # depending on the move of the delta between knot 1 and knot 2
+                    # depending on the delta between knot 1 and knot 2
                     new_knot_pos[0] += move(horiz)
                     new_knot_pos[1] += move(vert)
 
                     knots[knot_i+1] = tuple(new_knot_pos)
 
-            prev_knots = knots.copy()
+            #prev_knots = knots.copy()
             tail_positions.add(knots[-1])
 
 print(len(tail_positions))
