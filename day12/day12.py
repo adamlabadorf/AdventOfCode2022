@@ -52,7 +52,6 @@ with open('input.txt') as f:
 
     path_map = [['.']*xlen for _ in range(ylen)]
 
-
     for p1, p2 in zip(path, path[1:]):
         c = '.'
         if p1.x < p2.x:

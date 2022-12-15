@@ -1,28 +1,3 @@
-from collections import Counter
-import math
-
-# https://stackoverflow.com/questions/15347174/python-finding-prime-factors
-def prime_factors(n):
-    i = 2
-    factors = []
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-            factors.append(i)
-    if n > 1:
-        factors.append(n)
-    return factors
-
-class PrimeIndexedInt(object):
-    def __init__(self, val):
-        self.val
-        factors = prime_factors(val)
-        # factors keeps track of how many of each prime compose the number
-        self.factors = Counter(factors)
-
-
 class Item(object):
     def __init__(self, val):
         self.val = val
@@ -36,6 +11,7 @@ class Monkey(object):
         self.id = id
         self._items = []
         self.op = lambda x: x
+        self.reduce = lambda x: x
         self.test = lambda x: True
         self.inspected = 0
         # must set these to monkeys manually
@@ -53,9 +29,8 @@ class Monkey(object):
     def do_turn(self):
         for item in self.items:
             self.inspected += 1
-            #print(item.prime_factors)
             item.val = self.op(item.val)
-            #i = math.floor(i/3)
+            item.val = self.reduce(item.val)
             if self.test(item.val):
                 self.monkey_true.catch(item)
             else:
@@ -65,8 +40,9 @@ class Monkey(object):
     def catch(self, item):
         self._items.append(item)
 
-with open('test.txt') as f:
+with open('input.txt') as f:
     monkeys = []
+    divisor_prod = 1
     for r in f:
         r = r.strip()
         if r.startswith('Monkey'):
@@ -88,7 +64,9 @@ with open('test.txt') as f:
                 def g(x):
                     return (x % val) == 0
                 return g
-            monkeys[-1].test = f(int(test[-1]))
+            divisor = int(test[-1])
+            monkeys[-1].test = f(divisor)
+            divisor_prod *= divisor
         elif r.startswith('If true'):
             test = r.split(' ')
             monkeys[-1].monkey_true = int(test[-1])
@@ -96,9 +74,19 @@ with open('test.txt') as f:
             test = r.split(' ')
             monkeys[-1].monkey_false = int(test[-1])
 
+    # part 1, reduce for all monkeys is x/3
+    # reduce = lambda x: x/3
+    # part 2, reduce for all monkeys is x % <product of all divisors>
+    def f(val):
+        def g(x):
+            return x % val
+        return g
+    reduce = f(divisor_prod)
+
     # monkey_true and monkey_false above were place holders
     # set them to the appropriate monkeys
     for monkey in monkeys:
+        monkey.reduce = reduce
         monkey.monkey_true = monkeys[monkey.monkey_true]
         monkey.monkey_false = monkeys[monkey.monkey_false]
 
@@ -106,7 +94,7 @@ with open('test.txt') as f:
         for monkey in monkeys:
             monkey.do_turn()
 
-        if round in (0, 19, 499, 799)+tuple(range(1999,10000,1000)):
+        if round in (0, 19, 499, 799)+tuple(range(1999, 10000, 1000)):
             print('== After round {} =='.format(round+1))
             for monkey in monkeys:
                 print('Monkey {} ({}): {}'.format(monkey.id, monkey.inspected, monkey.items))
